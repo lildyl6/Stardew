@@ -1,0 +1,27 @@
+
+walkUp.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Boy14
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+Boy15
+  rotate: false
+  xy: 20, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+Boy16
+  rotate: false
+  xy: 38, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1

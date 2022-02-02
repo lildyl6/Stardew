@@ -1,0 +1,27 @@
+
+walkLeft.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Boy6
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+Boy7
+  rotate: false
+  xy: 20, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+Boy8
+  rotate: false
+  xy: 38, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
