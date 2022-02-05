@@ -22,6 +22,7 @@ public class Player
     private float elapsedTime = 0f;
 
 
+
     public Player(float xCenter, float yCenter, float width, float height, float movementSpeed,
                   int facing)
     {
@@ -33,34 +34,34 @@ public class Player
     public void draw(Batch batch, float deltaTime)
     {
         elapsedTime += deltaTime;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        if (Gdx.input.isKeyPressed(Input.Keys.A))
         {
             facing = 3;
-            boyAtlas = new TextureAtlas("walkLeft.atlas");
-            playerAnimation = new Animation<TextureRegion>(1f/30f, boyAtlas.getRegions());
-            batch.draw(playerAnimation.getKeyFrame(elapsedTime / 4, true),
-                boundingBox.x, boundingBox.y);
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        {
-            facing = 1;
-            boyAtlas = new TextureAtlas("walkRight.atlas");
-            playerAnimation = new Animation<TextureRegion>(1f/30f, boyAtlas.getRegions());
-            batch.draw(playerAnimation.getKeyFrame(elapsedTime / 4, true),
-                boundingBox.x, boundingBox.y);
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        {
-            facing = 2;
-            boyAtlas = new TextureAtlas("walkDown.atlas");
+            boyAtlas = new TextureAtlas("ManWalkLeft.atlas");
             playerAnimation = new Animation<TextureRegion>(1f/30f, boyAtlas.getRegions());
             batch.draw(playerAnimation.getKeyFrame(elapsedTime / 4, true),
                     boundingBox.x, boundingBox.y);
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP))
+        else if (Gdx.input.isKeyPressed(Input.Keys.D))
+        {
+            facing = 1;
+            boyAtlas = new TextureAtlas("ManWalkRight.atlas");
+            playerAnimation = new Animation<TextureRegion>(1f/30f, boyAtlas.getRegions());
+            batch.draw(playerAnimation.getKeyFrame(elapsedTime / 4, true),
+                boundingBox.x, boundingBox.y);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.S))
+        {
+            facing = 2;
+            boyAtlas = new TextureAtlas("ManWalkDown.atlas");
+            playerAnimation = new Animation<TextureRegion>(1f/30f, boyAtlas.getRegions());
+            batch.draw(playerAnimation.getKeyFrame(elapsedTime / 4, true),
+                    boundingBox.x, boundingBox.y);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.W))
         {
             facing = 0;
-            boyAtlas = new TextureAtlas("walkUp.atlas");
+            boyAtlas = new TextureAtlas("ManWalkUp.atlas");
             playerAnimation = new Animation<TextureRegion>(1f/30f, boyAtlas.getRegions());
             batch.draw(playerAnimation.getKeyFrame(elapsedTime / 4, true),
                     boundingBox.x, boundingBox.y);
@@ -70,22 +71,22 @@ public class Player
         {
             if (facing == 0)
             {
-                playerTexture = new Texture("faceUp.png");
+                playerTexture = new Texture("ManFaceUp.png");
                 batch.draw(playerTexture, boundingBox.x, boundingBox.y);
             }
             else if (facing == 1)
             {
-                playerTexture = new Texture("faceRight.png");
+                playerTexture = new Texture("ManFaceRight.png");
                 batch.draw(playerTexture, boundingBox.x, boundingBox.y);
             }
             else if (facing == 2)
             {
-                playerTexture = new Texture("faceDown.png");
+                playerTexture = new Texture("ManFaceDown.png");
                 batch.draw(playerTexture, boundingBox.x, boundingBox.y);
             }
             else if (facing == 3)
             {
-                playerTexture = new Texture("faceLeft.png");
+                playerTexture = new Texture("ManFaceLeft.png");
                 batch.draw(playerTexture, boundingBox.x, boundingBox.y);
             }
 

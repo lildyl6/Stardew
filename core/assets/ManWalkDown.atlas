@@ -1,26 +1,33 @@
 
-walkUp.png
+ManWalkDown.png
 size: 64,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Boy14
+Man1
   rotate: false
   xy: 2, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
-Boy15
+Man2
   rotate: false
   xy: 20, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
-Boy16
+Man4
   rotate: false
   xy: 38, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+Man3
+  rotate: false
+  xy: 20, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0

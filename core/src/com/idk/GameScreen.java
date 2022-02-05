@@ -10,6 +10,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -21,114 +25,131 @@ public class GameScreen implements Screen
     private OrthographicCamera camera;
     private Viewport viewport;
     private SpriteBatch batch;
-    private Texture background;
 
     private final int WORLD_WIDTH = 640;
     private final int WORLD_HEIGHT = 640;
 
     private Player player;
 
-    // hardcode crap
-    boolean bombExists = false;
-    boolean bombCreated = false;
-    boolean canPlaceBomb = true;
-    int i = 100;
-    Bomb bomb;
+    //tiledmap shit
+
+    private OrthogonalTiledMapRenderer tmr;
+    private TiledMap map;
+    private TiledMapTileLayer collisionLayer;
+
+    boolean canMoveUp = true;
+    boolean canMoveDown = true;
+    boolean canMoveLeft = true;
+    boolean canMoveRight = true;
 
 
     public GameScreen()
     {
-        camera = new OrthographicCamera(20, 20);
-        viewport = new StretchViewport(300,300,camera);
-        background = new Texture("largeMap.png");
+        camera = new OrthographicCamera(10, 10);
+        viewport = new StretchViewport(200,200,camera);
 
-        player = new Player(140, 150, 16,32, 50, 2);
+
+        player = new Player(100, 100, 16,32, 70, 2);
 
         batch = new SpriteBatch();
+
+        //tiledmap Shit
+        map = new TmxMapLoader().load("MegaMapCollision.tmx");
+        tmr = new OrthogonalTiledMapRenderer(map, batch);
+        collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
     }
 
 
     @Override
     public void render(float deltaTime)
     {
+        tmr.render();
+
         batch.begin();
 
         //detectInput(deltaTime);
-
-
-
-        batch.draw(background, -400, -400);
+        //batch.draw(background, -200, -200);
 
         player.draw(batch, deltaTime);
 
-        if (bombExists)
-        {
-            bomb = getBomb(deltaTime);
-            bombCreated = true;
-            bombExists = false;
-            canPlaceBomb = false;
-        }
-        if (bombCreated && i > 0)
-        {
-            bomb.draw(batch, deltaTime, i);
-            i--;
-        }
-        else
-        {
-            i = 100;
-            bombCreated = false;
-            canPlaceBomb = true;
-        }
+        //tiledmap
+        tmr.setView(camera);
+
 
         detectInput(deltaTime);
 
         batch.end();
+
+        //tmr.render();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        {
+            Gdx.app.exit();
+        }
     }
 
-    public Bomb getBomb(float deltaTime)
+    private boolean canMove(int facing)
     {
-        Bomb bomb;
+        int xright = (int)player.boundingBox.x + (int)player.boundingBox.width - 1;
+        int xleft = (int)player.boundingBox.x;
+        int yup = (int)player.boundingBox.y + (int)player.boundingBox.height/2;
+        int ydown = (int)player.boundingBox.y + 2;
+
         if (player.facing == 0)
         {
-            bomb = new Bomb(player.boundingBox.x,
-                    player.boundingBox.y + player.boundingBox.height -2, 0);
+            if (collisionLayer.getCell(xright/16,
+                    (yup + 1)/16).getTile().getProperties().containsKey("Blocked")
+                || collisionLayer.getCell((xleft + 1)/16,
+                    (yup + 1)/16).getTile().getProperties().containsKey("Blocked"))
+            {
+                return false;
+            }
         }
         else if (player.facing == 1)
         {
-            bomb = new Bomb(player.boundingBox.x + player.boundingBox.width -1,
-                    player.boundingBox.y, 1);
+            if (collisionLayer.getCell((xright+ 1)/16,
+                    yup/16).getTile().getProperties().containsKey("Blocked")
+                || collisionLayer.getCell((xright + 1)/16,
+                    (ydown + 1)/16).getTile().getProperties().containsKey("Blocked"))
+            {
+                return false;
+            }
         }
         else if (player.facing == 2)
         {
-            bomb = new Bomb(player.boundingBox.x,
-                    player.boundingBox.y - player.boundingBox.height/2, 2);
+            if (collisionLayer.getCell((xleft + 1)/16,
+                    ydown/16).getTile().getProperties().containsKey("Blocked")
+                || collisionLayer.getCell(xright/16,
+                    ydown/16).getTile().getProperties().containsKey("Blocked"))
+            {
+                return false;
+            }
         }
-        else  // player.facing == 3
+        else // facing == 3
         {
-            bomb = new Bomb(player.boundingBox.x - player.boundingBox.width,
-                    player.boundingBox.y, 3);
+            if (collisionLayer.getCell(xleft/16,
+                    yup/16).getTile().getProperties().containsKey("Blocked")
+                || collisionLayer.getCell(xleft/16,
+                    (ydown + 1)/16).getTile().getProperties().containsKey("Blocked"))
+            {
+                return false;
+            }
         }
 
-        //bombExists = false;
-        bomb.draw(batch, deltaTime, i);
-        return bomb;
+        return true;
     }
 
     private void detectInput(float deltaTime)
     {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && canPlaceBomb)
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && canMove(3))
         {
-            bombExists = true;
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        {
-            if (Gdx.input.isKeyPressed(Input.Keys.UP))
+            if (Gdx.input.isKeyPressed(Input.Keys.W) && canMove(0))
             {
                 float bothChange = player.movementSpeed * deltaTime/1.414f;
                 player.translate(-bothChange, bothChange);
                 updateCamera(-bothChange, bothChange);
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            else if (Gdx.input.isKeyPressed(Input.Keys.S) && canMove(2))
             {
                 float bothChange = player.movementSpeed * deltaTime/1.414f;
                 player.translate(-bothChange, -bothChange);
@@ -141,15 +162,15 @@ public class GameScreen implements Screen
                 updateCamera(-xChange, 0f);
             }
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        else if (Gdx.input.isKeyPressed(Input.Keys.D) && canMove(1))
         {
-            if (Gdx.input.isKeyPressed(Input.Keys.UP))
+            if (Gdx.input.isKeyPressed(Input.Keys.W) && canMove(0))
             {
                 float bothChange = player.movementSpeed * deltaTime/1.414f;
                 player.translate(bothChange, bothChange);
                 updateCamera(bothChange, bothChange);
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            else if (Gdx.input.isKeyPressed(Input.Keys.S) && canMove(2))
             {
                 float bothChange = player.movementSpeed * deltaTime/1.414f;
                 player.translate(bothChange, -bothChange);
@@ -162,17 +183,20 @@ public class GameScreen implements Screen
                 updateCamera(xChange, 0f);
             }
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP))
+        else if (Gdx.input.isKeyPressed(Input.Keys.W) && canMove(0))
         {
+            if (canMove(0))
+            {
                 float yChange = player.movementSpeed * deltaTime;
                 player.translate(0f, yChange);
                 updateCamera(0f, yChange);
+            }
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        else if (Gdx.input.isKeyPressed(Input.Keys.S) && canMove(2))
         {
-                float yChange = player.movementSpeed * deltaTime;
-                player.translate(0f, -yChange);
-                updateCamera(0f, -yChange);
+            float yChange = player.movementSpeed * deltaTime;
+            player.translate(0f, -yChange);
+            updateCamera(0f, -yChange);
         }
         else
         {
@@ -185,11 +209,6 @@ public class GameScreen implements Screen
             camera.translate(xChange, yChange);
             camera.update();
             batch.setProjectionMatrix(camera.combined);
-    }
-
-    public void setBombExists(boolean bool)
-    {
-        bombExists = bool;
     }
 
     @Override
@@ -225,6 +244,8 @@ public class GameScreen implements Screen
     @Override
     public void dispose()
     {
-
+        map.dispose();
+        tmr.dispose();
+        batch.dispose();
     }
 }

@@ -1,31 +1,31 @@
 
-walkDown.png
+ManWalkRight.png
 size: 64,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Boy1
-  rotate: false
-  xy: 20, 2
-  size: 16, 32
-  orig: 16, 32
-  offset: 0, 0
-  index: -1
-Boy3
-  rotate: false
-  xy: 2, 2
-  size: 16, 32
-  orig: 16, 32
-  offset: 0, 0
-  index: -1
-Boy2
+Man10
   rotate: false
   xy: 38, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
-Boy4
+Man12
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+Man11
+  rotate: false
+  xy: 20, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+Man9
   rotate: false
   xy: 2, 2
   size: 16, 32
