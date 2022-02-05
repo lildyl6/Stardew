@@ -39,13 +39,18 @@ public class GameScreen implements Screen
     public GameScreen()
     {
         camera = new OrthographicCamera(10, 10);
+
+
+
         viewport = new StretchViewport(200,200,camera);
 
-        player = new Player(100, 100, 16,32, 70, 2);
+
+
+        player = new Player(200, 200, 16,32, 70, 2);
 
         batch = new SpriteBatch();
 
-        map = new TmxMapLoader().load("MegaMapCollision.tmx");
+        map = new TmxMapLoader().load("BorderMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
     }
@@ -54,6 +59,10 @@ public class GameScreen implements Screen
     @Override
     public void render(float deltaTime)
     {
+        camera.position.x = player.boundingBox.x + player.boundingBox.width/2;
+        camera.position.y = player.boundingBox.y + player.boundingBox.height/2;
+        camera.update();
+
         tmr.render();
 
         batch.begin();

@@ -88,6 +88,7 @@ public class Player
                 batch.draw(playerTexture, boundingBox.x, boundingBox.y);
             }
         }
+
     }
 
     public void translate(float xChange, float yChange)
