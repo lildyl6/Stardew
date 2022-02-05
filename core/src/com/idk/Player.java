@@ -22,7 +22,6 @@ public class Player
     private float elapsedTime = 0f;
 
 
-
     public Player(float xCenter, float yCenter, float width, float height, float movementSpeed,
                   int facing)
     {
@@ -66,7 +65,6 @@ public class Player
             batch.draw(playerAnimation.getKeyFrame(elapsedTime / 4, true),
                     boundingBox.x, boundingBox.y);
         }
-
         else
         {
             if (facing == 0)
@@ -89,9 +87,7 @@ public class Player
                 playerTexture = new Texture("ManFaceLeft.png");
                 batch.draw(playerTexture, boundingBox.x, boundingBox.y);
             }
-
         }
-
     }
 
     public void translate(float xChange, float yChange)

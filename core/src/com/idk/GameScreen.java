@@ -31,16 +31,9 @@ public class GameScreen implements Screen
 
     private Player player;
 
-    //tiledmap shit
-
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private TiledMapTileLayer collisionLayer;
-
-    boolean canMoveUp = true;
-    boolean canMoveDown = true;
-    boolean canMoveLeft = true;
-    boolean canMoveRight = true;
 
 
     public GameScreen()
@@ -48,12 +41,10 @@ public class GameScreen implements Screen
         camera = new OrthographicCamera(10, 10);
         viewport = new StretchViewport(200,200,camera);
 
-
         player = new Player(100, 100, 16,32, 70, 2);
 
         batch = new SpriteBatch();
 
-        //tiledmap Shit
         map = new TmxMapLoader().load("MegaMapCollision.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
@@ -67,20 +58,13 @@ public class GameScreen implements Screen
 
         batch.begin();
 
-        //detectInput(deltaTime);
-        //batch.draw(background, -200, -200);
-
         player.draw(batch, deltaTime);
 
-        //tiledmap
         tmr.setView(camera);
-
 
         detectInput(deltaTime);
 
         batch.end();
-
-        //tmr.render();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
         {
@@ -95,7 +79,7 @@ public class GameScreen implements Screen
         int yup = (int)player.boundingBox.y + (int)player.boundingBox.height/2;
         int ydown = (int)player.boundingBox.y + 2;
 
-        if (player.facing == 0)
+        if (facing == 0)
         {
             if (collisionLayer.getCell(xright/16,
                     (yup + 1)/16).getTile().getProperties().containsKey("Blocked")
@@ -105,7 +89,7 @@ public class GameScreen implements Screen
                 return false;
             }
         }
-        else if (player.facing == 1)
+        else if (facing == 1)
         {
             if (collisionLayer.getCell((xright+ 1)/16,
                     yup/16).getTile().getProperties().containsKey("Blocked")
@@ -115,7 +99,7 @@ public class GameScreen implements Screen
                 return false;
             }
         }
-        else if (player.facing == 2)
+        else if (facing == 2)
         {
             if (collisionLayer.getCell((xleft + 1)/16,
                     ydown/16).getTile().getProperties().containsKey("Blocked")
@@ -197,10 +181,6 @@ public class GameScreen implements Screen
             float yChange = player.movementSpeed * deltaTime;
             player.translate(0f, -yChange);
             updateCamera(0f, -yChange);
-        }
-        else
-        {
-
         }
     }
 
