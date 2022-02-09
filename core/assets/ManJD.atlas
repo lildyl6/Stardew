@@ -1,0 +1,76 @@
+
+ManJD.png
+size: 32,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ManJD10
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD1
+  rotate: false
+  xy: 2, 36
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD4
+  rotate: false
+  xy: 2, 70
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD7
+  rotate: false
+  xy: 2, 138
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD5
+  rotate: false
+  xy: 2, 104
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD6
+  rotate: false
+  xy: 2, 104
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD8
+  rotate: false
+  xy: 2, 138
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD3
+  rotate: false
+  xy: 2, 70
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD9
+  rotate: false
+  xy: 2, 36
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJD2
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1

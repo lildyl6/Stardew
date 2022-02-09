@@ -1,0 +1,76 @@
+
+ManJR.png
+size: 32,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ManJR10
+  rotate: false
+  xy: 2, 138
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR1
+  rotate: false
+  xy: 2, 104
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR2
+  rotate: false
+  xy: 2, 70
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR9
+  rotate: false
+  xy: 2, 36
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR3
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR8
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR4
+  rotate: false
+  xy: 2, 36
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR7
+  rotate: false
+  xy: 2, 70
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR5
+  rotate: false
+  xy: 2, 104
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManJR6
+  rotate: false
+  xy: 2, 138
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
