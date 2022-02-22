@@ -1,0 +1,20 @@
+
+ManSR.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ManSR1
+  rotate: false
+  xy: 20, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+ManSR2
+  rotate: false
+  xy: 2, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
