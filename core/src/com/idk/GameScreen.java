@@ -2,6 +2,7 @@ package com.idk;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -37,14 +39,16 @@ public class GameScreen implements Screen
     private final int WORLD_WIDTH = 640;
     private final int WORLD_HEIGHT = 640;
 
-    private Player player;
-    //private Bat bat;
+    public Player player;
     public Array<Bat> bats;
+    public Inventory inventory;
+    public Array<Item> items;
 
     private int hardCodeLeft = 0;
     private int hardCodeRight = 0;
     private int hardCodeUp = 0;
     private int hardCodeDown = 0;
+    private int batcooldown = 0;
 
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
@@ -75,14 +79,13 @@ public class GameScreen implements Screen
         viewport = new StretchViewport(200,200,camera);
 
         player = new Player(300, 300, 16,32, 70, 2);
-
         bats = new Array<Bat>();
-        //bat = new Bat(400, 400, 16, 16, 1);
-        //bats.add(bat);
+        inventory = new Inventory();
+        items = new Array<Item>();
 
         batch = new SpriteBatch();
 
-        map = new TmxMapLoader().load("ShrubMap.tmx");
+        map = new TmxMapLoader().load("BatMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map, batch);
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
 
@@ -106,8 +109,9 @@ public class GameScreen implements Screen
         player.draw(batch, deltaTime, player.movementSpeed);
 
         doBats(deltaTime);
-
         doHealthBar();
+        doInventory();
+        //canUseItem();
 
         tmr.setView(camera);
 
@@ -120,6 +124,49 @@ public class GameScreen implements Screen
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
         {
             Gdx.app.exit();
+        }
+    }
+
+    private void doInventory()
+    {
+        inventory.draw(batch, player.boundingBox.x - 68, player.boundingBox.y - 80);
+
+        // placed here for temp
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
+        {
+            Item itemSword = new Item("Sword", 200, 200, new Texture("ItemSword.png"),
+                    new Texture("inventorySword.png"));
+            items.add(itemSword);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P))
+        {
+            Item itemApple = new Item("Apple", 250, 250, new Texture("ItemApple.png"),
+                    new Texture("InventoryApple.png"));
+            items.add(itemApple);
+        }
+
+        int index = 0;
+        for (Item item : items)
+        {
+            item.draw(batch);
+            checkForPickUp(item, index);
+            index++;
+        }
+    }
+
+    private void checkForPickUp(Item item, int index)
+    {
+        if (item.boundingbox.overlaps(player.boundingBox))
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                if (inventory.inv.get(i).name.equals("Blank"))
+                {
+                    items.removeIndex(index);
+                    inventory.inv.set(i, item);
+                    break;
+                }
+            }
         }
     }
 
@@ -141,6 +188,7 @@ public class GameScreen implements Screen
 
     private void doBats(float deltaTime)
     {
+        checkForBatSpawn();
         int index = 0;
         for (Bat b : bats)
         {
@@ -149,6 +197,30 @@ public class GameScreen implements Screen
             index++;
         }
     }
+
+    private void checkForBatSpawn()
+    {
+        int x = (int)(player.boundingBox.x + player.boundingBox.width/2)/16;
+        int y = (int)(player.boundingBox.y + player.boundingBox.height/3)/16;
+        TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get(0);
+
+        for (int i = -4; i < 4; i++)
+        {
+            for (int j = -4; j < 4; j++)
+            {
+                if (layer.getCell(x+i,y+j).getTile().getProperties().containsKey("BatSpawn")
+                    && batcooldown < 0)
+                {
+                    Bat b = new Bat((x+i)*16 + 8,(y+j)*16 + 4,16,16,1);
+                    bats.add(b);
+                    batcooldown = 200;
+                }
+            }
+        }
+        batcooldown--;
+
+    }
+
 
     private void detectBatKill(Bat bat, int index)
     {
@@ -288,10 +360,12 @@ public class GameScreen implements Screen
             }
         }
 
-        streamTilesUL.reverse();
-        streamTilesUR.reverse();
-        streamTilesDL.reverse();
+        //have to change order when importing new tileset. dunno why
+        //streamTilesUL.reverse();
+        //streamTilesUR.reverse();
+        //streamTilesDL.reverse();
         streamTilesDR.reverse();
+        shrubTiles.reverse();
 
         animatedStreamTileH = new AnimatedTiledMapTile(1/3f, streamTilesH);
         animatedStreamTileV = new AnimatedTiledMapTile(1/3f, streamTilesV);
@@ -357,6 +431,33 @@ public class GameScreen implements Screen
         }
     }
 
+    public void canUseItem()
+    {
+        if (inventory.selected > inventory.inv.size - 1)
+        {
+            player.canSwing = false;
+        }
+        else
+        {
+            if (inventory.inv.get(inventory.selected).name.equals("Sword"))
+            {
+                player.canSwing = true;
+            }
+            else
+            {
+                player.canSwing = false;
+            }
+            if (inventory.inv.get(inventory.selected).name.equals("Apple"))
+            {
+                player.canEat = true;
+            }
+            else
+            {
+                player.canEat = false;
+            }
+        }
+    }
+
     private boolean canMove(int facing)
     {
         int xright = (int)player.boundingBox.x + (int)player.boundingBox.width - 1;
@@ -364,6 +465,10 @@ public class GameScreen implements Screen
         int yup = (int)player.boundingBox.y + (int)player.boundingBox.height/2;
         int ydown = (int)player.boundingBox.y + 2;
 
+        if (hardCodeUp != 0 || hardCodeDown != 0 || hardCodeLeft != 0 || hardCodeRight != 0)
+        {
+            return false;
+        }
         if (facing == 0)
         {
             TiledMapTileLayer.Cell topLeft = collisionLayer.getCell((xleft + 1)/16, (yup + 1)/16);
@@ -371,9 +476,9 @@ public class GameScreen implements Screen
 
             if (topLeft.getTile().getProperties().containsKey("Jumpable")
                     && topRight.getTile().getProperties().containsKey("Jumpable")
-                    && player.getJumpFrames() > 25)
+                    && player.jumpFrames > 25)
             {
-                hardCodeUp = 25;
+                hardCodeUp = 30;
                 return true;
             }
             else if (topLeft.getTile().getProperties().containsKey("Blocked")
@@ -389,9 +494,9 @@ public class GameScreen implements Screen
 
             if (topRight.getTile().getProperties().containsKey("Jumpable")
                 && bottomRight.getTile().getProperties().containsKey("Jumpable")
-                    && player.getJumpFrames() > 25)
+                    && player.jumpFrames > 25)
             {
-                hardCodeRight = 25;
+                hardCodeRight = 30;
                 return true;
             }
             else if (topRight.getTile().getProperties().containsKey("Blocked")
@@ -407,9 +512,9 @@ public class GameScreen implements Screen
 
             if (bottomLeft.getTile().getProperties().containsKey("Jumpable")
                 && bottomRight.getTile().getProperties().containsKey("Jumpable")
-                && player.getJumpFrames() > 25)
+                && player.jumpFrames > 25)
             {
-                hardCodeDown = 25;
+                hardCodeDown = 30;
                 return true;
             }
             else if (bottomLeft.getTile().getProperties().containsKey("Blocked")
@@ -425,9 +530,9 @@ public class GameScreen implements Screen
 
             if (topLeft.getTile().getProperties().containsKey("Jumpable")
                     && bottomLeft.getTile().getProperties().containsKey("Jumpable")
-                    && player.getJumpFrames() > 25)
+                    && player.jumpFrames > 25)
             {
-                hardCodeLeft = 25;
+                hardCodeLeft = 30;
                 return true;
             }
             else if (topLeft.getTile().getProperties().containsKey("Blocked")
@@ -447,10 +552,21 @@ public class GameScreen implements Screen
         {
             // dont move
         }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
+        else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
         {
-            Bat b = new Bat(400, 400, 16, 16, 1);
-            bats.add(b);
+            if (inventory.getSelected().equals("Apple") && player.health < 5)
+            {
+                player.doAction(inventory.getSelected());
+                inventory.remove();
+            }
+            else
+            {
+                player.doAction(inventory.getSelected());
+            }
+        }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+        {
+            player.doAction("Jump");
         }
         else if ((Gdx.input.isKeyPressed(Input.Keys.A) && canMove(3))
             || hardCodeLeft > 0)
@@ -600,4 +716,5 @@ public class GameScreen implements Screen
         tmr.dispose();
         batch.dispose();
     }
+
 }

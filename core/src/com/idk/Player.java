@@ -24,6 +24,8 @@ public class Player
     public int jumpFrames = 0;
     public int swingFrames = 0;
     public int hitCoolDown = 0;
+    public boolean canSwing = false;
+    public boolean canEat = false;
 
 
     public Player(float xCenter, float yCenter, float width, float height, float movementSpeed,
@@ -35,6 +37,25 @@ public class Player
         health = 5;
     }
 
+    public void doAction(String action)
+    {
+        if (action.equals("Jump"))
+        {
+            jumpFrames = 40;
+        }
+        else if (action.equals("Sword"))
+        {
+            swingFrames = 20;
+        }
+        else if (action.equals("Apple"))
+        {
+            if (health < 5)
+            {
+                this.health++;
+            }
+        }
+    }
+
     public void handleHit()
     {
         if (hitCoolDown == 0)
@@ -42,13 +63,9 @@ public class Player
             this.health--;
             hitCoolDown = 100;
         }
-
     }
 
-    public int getJumpFrames()
-    {
-        return jumpFrames;
-    }
+
 
     public void draw(Batch batch, float deltaTime, float speed)
     {
@@ -64,50 +81,6 @@ public class Player
         {
             drawSwing(batch, swingFrames, this.facing);
             swingFrames--;
-        }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-        {
-            if (facing == 0)
-            {
-                playerTexture = new Texture("ManFaceUp.png");
-            }
-            else if (facing == 1)
-            {
-                playerTexture = new Texture("ManFaceRight.png");
-            }
-            else if (facing == 2)
-            {
-                playerTexture = new Texture("ManFaceDown.png");
-            }
-            else //facing == 3
-            {
-                playerTexture = new Texture("ManFaceLeft.png");
-            }
-
-            batch.draw(playerTexture, boundingBox.x, boundingBox.y);
-            jumpFrames = 40;
-        }
-        else if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
-        {
-            if (facing == 0)
-            {
-                playerTexture = new Texture("ManFaceUp.png");
-            }
-            else if (facing == 1)
-            {
-                playerTexture = new Texture("ManFaceRight.png");
-            }
-            else if (facing == 2)
-            {
-                playerTexture = new Texture("ManFaceDown.png");
-            }
-            else //facing == 3
-            {
-                playerTexture = new Texture("ManFaceLeft.png");
-            }
-
-            batch.draw(playerTexture, boundingBox.x, boundingBox.y);
-            swingFrames = 20;
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.A))
         {
